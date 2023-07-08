@@ -35,8 +35,14 @@ public class GestioneClasse {
 				switch (scelta) {
 				case 1:
 					stampaLista(listaStudenti);
+					System.out.println("**********");
 					break;
 				case 2:
+					System.out.println("Inserire Nome o Cognome dello studente");
+					String studente = input.nextLine();
+					ricerca(listaStudenti, studente);
+					System.out.println("**********");
+					break;
 				case 3:
 				case 0:
 				default:
@@ -111,6 +117,33 @@ public class GestioneClasse {
 		}
 	}
 
+	}
+
+	public static void ricerca(Map<Integer, Studente> lista, String inputNomeOCognome) {
+		// Map<Integer, Studente> studentiTrovati = new HashMap<Integer, Studente>();
+		// Studente studenteNomeOCognomeTrovato;
+		String nome;
+		String cognome;
+		double media;
+		int id;
+		boolean trovato = false;
+		for (Map.Entry<Integer, Studente> entry : lista.entrySet()) {
+			if (entry.getValue().getNome().equalsIgnoreCase(inputNomeOCognome)
+					|| entry.getValue().getCognome().equalsIgnoreCase(inputNomeOCognome)) {
+				nome = entry.getValue().getNome();
+				cognome = entry.getValue().getCognome();
+				media = entry.getValue().getmedia();
+				id = entry.getKey();
+				System.out.println("**********");
+				System.out.println("Risultati per '" + inputNomeOCognome + "'");
+				System.out.println(nome + " " + cognome + " MEDIA=" + media + " ID=" + id);
+				trovato = true;
+			}
+		}
+		if (!trovato) {
+			System.out.println("La ricerca per '" + inputNomeOCognome + "' non ha dato nessun risultato");
+			System.out.println("**********");
+		}
 	}
 
 }
