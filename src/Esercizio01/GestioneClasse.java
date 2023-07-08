@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 
@@ -17,8 +18,6 @@ public class GestioneClasse {
 
 	public static void main(String[] args) {
 		System.out.println("Esercizio 1: Gestione degli studenti");
-
-
 		Scanner input = new Scanner(System.in);
 		Map<Integer, Studente> listaStudenti = new HashMap<Integer, Studente>();
 		listaStudenti = creaLista();
@@ -31,7 +30,11 @@ public class GestioneClasse {
 				System.out.println("2. Fai una ricerca per Nome o Cognome Studente");
 				System.out.println("3. Stampa Lista Studenti con voto maggiore di...");
 				System.out.println("0. Esci");
-				scelta = Integer.parseInt(input.nextLine());
+				try {
+					scelta = Integer.parseInt(input.nextLine());
+				} catch (NumberFormatException e) {
+					scelta = 10;
+				}
 				switch (scelta) {
 				case 1:
 					stampaLista(listaStudenti);
@@ -44,9 +47,22 @@ public class GestioneClasse {
 					System.out.println("**********");
 					break;
 				case 3:
+
+					System.out.println("Inserire voto");
+					int voto = Integer.parseInt(input.nextLine());
+					ricercaVoto(listaStudenti, voto);
+					System.out.println("**********");
+
+					break;
 				case 0:
+					System.out.println("Arrivederci");
+					System.out.println("**********");
+
+					break;
 				default:
-					System.out.println("Valore non valido");
+					System.out.println("Inserire un numero valido");
+					System.out.println("**********");
+
 					break;
 				}
 
@@ -144,6 +160,15 @@ public class GestioneClasse {
 			System.out.println("La ricerca per '" + inputNomeOCognome + "' non ha dato nessun risultato");
 			System.out.println("**********");
 		}
+	}
+
+	public static void ricercaVoto(Map<Integer, Studente> map, double inputVoto) {
+		Map<Integer, Studente> mapStudentiVoto = new HashMap<Integer, Studente>();
+		mapStudentiVoto = map.entrySet().stream().filter(entry -> entry.getValue().getmedia() > inputVoto)
+				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+
+		mapStudentiVoto.entrySet().stream()
+				.forEach(entry -> System.out.println("ID=" + entry.getKey() + " " + entry.getValue()));
 	}
 
 }
