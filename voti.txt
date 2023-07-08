@@ -1,0 +1,19 @@
+Lista degli studenti con una media superiore di 25.0
+624	Augusto	Costa	26.84
+
+817	Quirino	Mazza	25.58
+
+266	Ausonio	Montanari	30.83
+
+284	Carlo	Monti	29.31
+
+432	Mariapia	Monti	26.82
+
+210	Mietta	Santoro	29.86
+
+291	Alessio	Santoro	25.8
+
+893	Ileana	Santoro	26.62
+
+562	Evangelista	Silvestri	30.92
+

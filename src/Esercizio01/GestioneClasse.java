@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -105,11 +106,6 @@ public class GestioneClasse {
 	}
 
 	public static void stampaLista(Map<Integer, Studente> map) {
-
-		System.out.println("ID\tNOME\t\tCOGNOME\t\t\tMEDIA");
-		for (Map.Entry<Integer, Studente> entry : map.entrySet()) {
-			System.out.println(entry);
-		}
 		File file = new File("GestioneClasse.txt");
 		try {
 			FileUtils.writeStringToFile(file, "ID NOME COGNOME MEDIA"+System.lineSeparator(), "UTF-8");
@@ -117,21 +113,28 @@ public class GestioneClasse {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		for (Map.Entry<Integer, Studente> entry : map.entrySet()) {
-			Integer idStudente =  entry.getKey();
-			String nomeStudente = entry.getValue().getNome();
-			String cognomeStudente = entry.getValue().getCognome();
-			double mediaStudente = entry.getValue().getmedia();
-			
-			String testo = idStudente + "\t" + nomeStudente + "\t" + cognomeStudente + "\t" + mediaStudente;
+		System.out.println("ID\tNOME\t\tCOGNOME\t\t\tMEDIA");
+		TreeMap<Integer, Studente> mappaOrdinata = new TreeMap<>();
+		mappaOrdinata.putAll(map);
 
-			try {
-				FileUtils.writeStringToFile(file, testo + System.lineSeparator(), "UTF-8", true);
-		} catch (IOException e) {
+		mappaOrdinata.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue((s1, s2) -> s1.getCognome().compareTo(s2.getCognome())))
+				.forEach(entry -> {
 
-			e.printStackTrace();
-		}
-	}
+					Integer idStudente = entry.getKey();
+					String nomeStudente = entry.getValue().getNome();
+					String cognomeStudente = entry.getValue().getCognome();
+					double mediaStudente = entry.getValue().getmedia();
+					System.out.println("ID=" + idStudente + " " + entry.getValue());
+					String testo = idStudente + "\t" + nomeStudente + "\t" + cognomeStudente + "\t" + mediaStudente;
+
+					try {
+						FileUtils.writeStringToFile(file, testo + System.lineSeparator(), "UTF-8", true);
+					} catch (IOException e) {
+
+						e.printStackTrace();
+					}
+				});
 
 	}
 
@@ -143,6 +146,7 @@ public class GestioneClasse {
 		double media;
 		int id;
 		boolean trovato = false;
+		System.out.println("Risultati per '" + inputNomeOCognome + "'");
 		for (Map.Entry<Integer, Studente> entry : lista.entrySet()) {
 			if (entry.getValue().getNome().equalsIgnoreCase(inputNomeOCognome)
 					|| entry.getValue().getCognome().equalsIgnoreCase(inputNomeOCognome)) {
@@ -151,7 +155,7 @@ public class GestioneClasse {
 				media = entry.getValue().getmedia();
 				id = entry.getKey();
 				System.out.println("**********");
-				System.out.println("Risultati per '" + inputNomeOCognome + "'");
+
 				System.out.println(nome + " " + cognome + " MEDIA=" + media + " ID=" + id);
 				trovato = true;
 			}
@@ -163,12 +167,53 @@ public class GestioneClasse {
 	}
 
 	public static void ricercaVoto(Map<Integer, Studente> map, double inputVoto) {
-		Map<Integer, Studente> mapStudentiVoto = new HashMap<Integer, Studente>();
-		mapStudentiVoto = map.entrySet().stream().filter(entry -> entry.getValue().getmedia() > inputVoto)
+
+		File file = new File("voti.txt");
+		try {
+			FileUtils.writeStringToFile(file,
+					"Lista degli studenti con una media superiore di " + inputVoto + System.lineSeparator(), "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (inputVoto > 17 && inputVoto < 34) {
+			Map<Integer, Studente> mapStudentiVoto = new HashMap<Integer, Studente>();
+
+			boolean presente = map.entrySet().stream().anyMatch(entry -> entry.getValue().getmedia() > inputVoto);
+			if (presente) {
+				mapStudentiVoto = map.entrySet().stream().filter(entry -> entry.getValue().getmedia() > inputVoto)
 				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
 
-		mapStudentiVoto.entrySet().stream()
-				.forEach(entry -> System.out.println("ID=" + entry.getKey() + " " + entry.getValue()));
+		TreeMap<Integer, Studente> mappaOrdinata = new TreeMap<>();
+		mappaOrdinata.putAll(mapStudentiVoto);
+
+		mappaOrdinata.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue((s1, s2) -> s1.getCognome().compareTo(s2.getCognome())))
+				.forEach(entry -> {
+
+					Integer idStudente = entry.getKey();
+					String nomeStudente = entry.getValue().getNome();
+					String cognomeStudente = entry.getValue().getCognome();
+					double mediaStudente = entry.getValue().getmedia();
+					System.out.println("ID=" + idStudente + " " + entry.getValue());
+					String testo = idStudente + "\t" + nomeStudente + "\t" + cognomeStudente + "\t" + mediaStudente;
+
+					try {
+						FileUtils.writeStringToFile(file, testo + System.lineSeparator() + System.lineSeparator(),
+								"UTF-8", true);
+					} catch (IOException e) {
+
+						e.printStackTrace();
+					}
+				});
+	} else {
+		System.out.println("Nessuno degli studenti ha una media superiore a " + inputVoto);
+	}
+
+	} else {
+		System.out.println("Inserire un valore tra 18 e 33");
+	}
+
 	}
 
 }
